@@ -195,6 +195,8 @@ Le décallage entre la v1 et la v2 montre une montée en puissance dans le dépl
 La v1 passerait presque pour une erreur de campagne, un PoC qui aurait été dévoilé par erreur et qui les a forcé a envoyer la 2nd vague de spam.  
 Pas de trace d'une campagne ciblée, ressemblerait plus à une campagne shotgun (spray and pray).  
 
+---
+
 ## 10. Conclusion
 
 Cette campagne démontre :
