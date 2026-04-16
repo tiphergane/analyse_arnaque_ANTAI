@@ -14,7 +14,7 @@ Ce mapping associe les techniques adverses observées aux **contre-mesures D3FEN
 ### 2.1 Initial Access – Phishing
 
 #### Technique adverse
-- Email/SMS phishing (lien raccourci)
+- Email phishing (lien raccourci)
 - Usurpation ANTAI
 
 #### D3FEND
