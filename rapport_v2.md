@@ -121,8 +121,6 @@ hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/detail
 
 hxxps://www[.]paiementexpress[.]es
 
-hxxps://www[.]paiementexpress[.]es
-
 
 ### Emails
 
