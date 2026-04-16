@@ -109,26 +109,26 @@ paiementexpress.es (site façade e-commerce/solution paiement pro)
 
 ### URLs
 
-https://appurl.io/wgMdQVVusR
+hxxps://appurl[.]io/wgMdQVVusR
 
-https://dfdsfsrt.cleverapps.io/service/payment-antai/amendes/index.php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/index[.]php
 
-https://dfdsfsrt.cleverapps.io/service/payment-antai/amendes/details.php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/details[.]php
 
-https://appurl.io/jp-S8Zjien
+hxxps://appurl[.]io/jp-S8Zjien
 
-https://service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es/net/details.php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/details[.]php
 
-https://www.paiementexpress.es
+hxxps://www[.]paiementexpress[.]es
 
-https://www.paiementexpress.es
+hxxps://www[.]paiementexpress[.]es
 
 
 ### Emails
 
-agonzalez@bilden.com.mx
+agonzalez@bilden[.]com[.]mx
 
-alu.23130638@correo.itlalaguna.edu.mx
+alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 
 
 ### Infrastructure
