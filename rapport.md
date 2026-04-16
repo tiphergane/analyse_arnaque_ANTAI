@@ -220,3 +220,5 @@ L'ensemble de ces éléments est cohérent avec l'utilisation d'un **phishing-as
 | URL          | `https://appurl[.]io/wgMdQVVusR`                                       |
 | URL backend  | `https://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php` |
 | URL campagne | `https://app[.]clientify[.]com/email-marketing/plus/campaigns/view/body/643018/1776086009/` |
+| URL market   | `www.paiementexpress`                                                      |
+| URL v2       | `service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es`            |
