@@ -100,9 +100,9 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 
 ### Domaines
 
-appurl.io
-dfdsfsrt.cleverapps.io
-paiementexpress.es
+appurl.io  
+dfdsfsrt.cleverapps.io  
+paiementexpress.es  
 service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es
 
 
@@ -167,17 +167,10 @@ alu.23130638@correo.itlalaguna.edu.mx
 
 ## 8. Recommandations CERT
 
-### Détection
-- blocage des IoC
-- détection de raccourcisseurs d’URL
-- analyse HTML (padding / entropie)
-
 ### Réponse
 - takedown coordonné :
   - hébergeur
-  - registrar
   - CDN
-- partage inter-CERT
 
 ### Prévention
 - sensibilisation utilisateurs
