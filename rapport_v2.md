@@ -182,7 +182,20 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 
 ---
 
-## 9. Conclusion
+## 9. Attribution
+
+### 9.1 Assomption
+
+Équipe francophone, certainement émergente, probablement en cours de structuration.  
+L'utilistation de mail en *`.mx`* détonne avec la sophistication du kit PhaaS, possiblement un tarif intéressant sur un batch d'email de ce TLD.   
+
+### 9.2 Observation
+
+Le décallage entre la v1 et la v2 montre une montée en puissance dans le déploiement du kit.  
+La v1 passerait presque pour une erreur de campagne, un PoC qui aurait été dévoilé par erreur et qui les a forcé a envoyer la 2nd vague de spam.  
+Pas de trace d'une campagne ciblée, ressemblerait plus à une campagne shotgun (spray and pray).  
+
+## 10. Conclusion
 
 Cette campagne démontre :
 
