@@ -88,11 +88,11 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 | 14/04/2026 | v1 – diffusion | email `.mx`, lien `appurl.io` |
 | 14/04/2026 | v1 – exploitation | Redirection vers `cleverapps.io` |
 | 14/04/2026 | v1 – phishing | Page clone ANTAI |
-| 14/04/2026 | v1 – réponse | Takedown Clever Cloud |
+| 16/04/2026 | v1 – réponse | Takedown Clever Cloud |
 | 15/04/2026 | v2 – diffusion | Nouveau mail `.edu.mx` |
 | 15/04/2026 | v2 – infra | Domaine `paiementexpress.es` |
 | 15/04/2026 | v2 – protection | Ajout Cloudflare |
-| 15/04/2026 | v2 – réponse | Takedown CDN |
+| 16/04/2026 | v2 – réponse | Takedown CDN |
 
 ---
 
