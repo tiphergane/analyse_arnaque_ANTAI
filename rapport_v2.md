@@ -34,7 +34,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 
 | Métrique | Valeur | Justification |
 |----------|--------|--------------|
-| AV (Attack Vector) | Network | Distribution via SMS / email |
+| AV (Attack Vector) | Network | Distribution via email |
 | AC (Attack Complexity) | Low | Aucune condition technique particulière |
 | PR (Privileges Required) | None | Aucun accès préalable requis |
 | UI (User Interaction) | Required | Clic sur lien nécessaire |
@@ -85,7 +85,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 
 | Date | Phase | Description |
 |------|------|------------|
-| 14/04/2026 | v1 – diffusion | SMS + email `.mx`, lien `appurl.io` |
+| 14/04/2026 | v1 – diffusion | email `.mx`, lien `appurl.io` |
 | 14/04/2026 | v1 – exploitation | Redirection vers `cleverapps.io` |
 | 14/04/2026 | v1 – phishing | Page clone ANTAI |
 | 14/04/2026 | v1 – réponse | Takedown Clever Cloud |
@@ -136,7 +136,7 @@ alu.23130638@correo.itlalaguna.edu.mx
 
 ### 7.1 Chaîne d’attaque
 
-1. Envoi SMS / email
+1. Envoi email
 2. Redirection via raccourcisseur (`appurl.io`)
 3. Landing phishing
 4. Saisie données utilisateur
