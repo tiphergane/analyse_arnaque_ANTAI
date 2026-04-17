@@ -56,6 +56,11 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 * **T1566.001 – Spearphishing Attachment**
 * **T1566.002 – Spearphishing Link**
 
+#### Resource Development
+
+* **T1583.001 – Acquire Infrastructure: Domains**
+* **T1585.001 – Establish Accounts: Domains**
+
 #### Execution
 
 * **T1204.001 – User Execution: Malicious Link**
