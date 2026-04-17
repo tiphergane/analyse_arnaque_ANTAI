@@ -120,8 +120,13 @@ service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es
 hxxps://appurl[.]io/wgMdQVVusR
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/index[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/details[.]php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/Assets/php/config/func[.]php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php
 hxxps://appurl[.]io/jp-S8Zjien
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/index[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/details[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/php/config/func[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/update_status[.]php
 hxxps://www[.]paiementexpress[.]es
 ```
 
@@ -145,9 +150,11 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 
 1. Envoi email
 2. Redirection via raccourcisseur (`appurl.io`)
-3. Landing phishing
-4. Saisie données utilisateur
-5. Exfiltration backend
+3. Challenge Cloudflare (anti-bot)
+4. Page d'atterrissage — collecte d'identité (`index.php`)
+5. Page de détails — affichage du montant (`details.php`)
+6. Page de paiement — collecte bancaire (`card.php` ou équivalent)
+7. Exfiltration backend (`func.php`)
 
 ---
 
@@ -173,11 +180,20 @@ Le site frauduleux est placé derrière un challenge Cloudflare de type `managed
 
 ### 7.3 Exfiltration
 
-#### Méthode de collecte
+#### Architecture du tunnel de collecte
 
-Les données sont collectées via un formulaire HTML classique soumis en `POST` vers le script `./Assets/php/config/func.php`, hébergé sur le même serveur que le kit. Le formulaire impose des contraintes de saisie côté client (masques jQuery pour la date et le numéro de téléphone) afin de maximiser la qualité des données collectées.
+Le kit repose sur un tunnel en deux étapes distinctes, chacune soumettant ses données via `POST` vers le même script d'exfiltration backend (`./Assets/php/config/func.php`). Un champ caché (`<input type="hidden" name="card">`) permet au script de distinguer les soumissions de la page bancaire de celles de la page d'identité.
 
-#### Données exfiltrées — étape identité
+L'ensemble de l'infrastructure a migré entre la v1 et la v2, mais la structure du kit reste identique — seul le domaine d'hébergement change :
+
+| Étape | v1 (`cleverapps.io`) | v2 (`paiementexpress.es`) |
+|---|---|---|
+| Page d'identité | `…/amendes/index.php` | `…/net/index.php` |
+| Page de détails | `…/amendes/details.php` | `…/net/details.php` |
+| Exfiltration | `…/amendes/Assets/php/config/func.php` | `…/net/Assets/php/config/func.php` |
+| Tracking | `…/amendes/status/update_status.php` | `…/net/status/update_status.php` |
+
+#### Étape 1 — Collecte d'identité (`index.php`)
 
 | Champ | Type |
 |---|---|
@@ -190,13 +206,27 @@ Les données sont collectées via un formulaire HTML classique soumis en `POST` 
 | Ville | Texte libre |
 | Code postal | Texte libre |
 
+#### Étape 2 — Collecte bancaire (page de paiement confirmée)
+
+L'analyse du code source de la page de paiement confirme la collecte complète des coordonnées bancaires. Le formulaire est visuellement soigné (logo carte, bandeau "Ce site est entièrement sécurisé", icône cadenas) et reproduit fidèlement l'apparence d'un portail de paiement officiel.
+
+| Champ | Masque jQuery | Remarque |
+|---|---|---|
+| Titulaire de la carte | Aucun | Texte libre |
+| Numéro de carte | `0000 0000 0000 0000` | 16 chiffres — Visa / Mastercard |
+| Date d'expiration | `00/00` | Format MM/AA |
+| CVV | `0000` | **4 chiffres** — couvre aussi les cartes Amex (CVV à 4 chiffres) |
+
+L'utilisation d'un masque CVV à 4 chiffres au lieu de 3 indique un ciblage délibérément élargi aux porteurs de cartes American Express.
+
+Le footer de cette page reproduit fidèlement celui du portail officiel `amendes.gouv.fr` : mentions DGFiP, liens Legifrance et Service-public.fr, copyright Direction générale des Finances publiques — renforçant l'illusion de légitimité auprès de victimes non averties.
+
 #### Tracking en temps réel des victimes
 
-Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodiques toutes les 30 secondes vers un endpoint de suivi (`status/update_status.php`), signalant le statut `online` ou `offline` de la victime ainsi que la page consultée. Ce mécanisme implique l'existence d'un **dashboard d'administration** permettant à l'opérateur de surveiller en temps réel la progression de ses victimes dans le tunnel, et d'intervenir manuellement si nécessaire (relance, modification du contenu affiché).
+Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodiques toutes les 30 secondes vers un endpoint de suivi (`status/update_status.php`), signalant le statut `online` ou `offline` de la victime ainsi que la page consultée. Ce mécanisme implique l'existence d'un **dashboard d'administration** permettant à l'opérateur de surveiller en temps réel la progression de chaque victime dans le tunnel, et d'intervenir manuellement si nécessaire (relance, modification du contenu affiché).
 
-#### Étape suivante probable — collecte bancaire
-
-L'architecture du kit (tunnel identité → détails → paiement) et le discours affiché sur la page `details.php` (montant de 295,99 €, promesse de remboursement sous 12 h) suggèrent qu'une page de saisie de coordonnées bancaires constitue l'étape finale du tunnel. Cette page n'a pas pu être atteinte sans soumettre de données réelles.
+> Endpoint de tracking (v1) : `hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php`
+> Endpoint de tracking (v2) : `hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/status/update_status[.]php`
 
 ---
 
@@ -206,7 +236,6 @@ L'architecture du kit (tunnel identité → détails → paiement) et le discour
 
 * Takedown coordonné auprès de l'hébergeur (Clever Cloud) et du CDN (Cloudflare).
 * Signalement PHAROS (plateforme nationale de signalement des contenus illicites).
-* Notification à l'ANTAI pour communication officielle auprès du public.
 
 ### Prévention
 
