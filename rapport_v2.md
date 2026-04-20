@@ -28,7 +28,9 @@ L'attaquant démontre :
 
 **Vector String :**
 
+```
 CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+```
 
 **Détail :**
 
@@ -100,9 +102,10 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 | 15/04/2026 | v2 – diffusion | Nouveau mail `.edu.mx` |
 | 15/04/2026 | v2 – infra | Domaine `paiementexpress.es` |
 | 15/04/2026 | v2 – protection | Ajout Cloudflare |
+| 15/04/2026 | Signalements | PHAROS, Clientify, INCIBE-CERT |
 | 16/04/2026 | v2 – réponse | Takedown CDN |
-
----
+| 17/04/2026 | INCIBE-CERT | Confirmation de prise en charge || 20/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
+| 20/04/2026 | Signalement | cybermalveillance.gouv.fr |
 
 ## 6. Indicateurs de compromission (IoC)
 
@@ -141,6 +144,13 @@ hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status
 hxxps://www[.]paiementexpress[.]es
 ```
 
+### Emails
+
+```
+agonzalez@bilden[.]com[.]mx
+alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
+```
+
 ### Hashes SHA256 (pages HTML rendues côté client)
 
 > Ces empreintes correspondent aux pages telles que reçues par le navigateur. Le code PHP exécuté côté serveur n'est pas inclus. Ils permettent d'identifier cette instance précise du kit ; toute modification du HTML, même mineure, produirait des empreintes différentes.
@@ -152,18 +162,11 @@ hxxps://www[.]paiementexpress[.]es
 | `js.js` | `/service/payment-antai/amendes/Assets/js/js.js` | `/net/Assets/js/js.js` | `be1ab9df8b052cb1306d9afe90088380530101323ac1a8e92cc918b9c1f420a6` |
 | `stutes.js` | `/service/payment-antai/amendes/Assets/js/stutes.js` | `/net/Assets/js/stutes.js` | `eb036f1eaa0d35e643d9e2d1f43ed8a8e4f1d15ff58bdef88f7f90f240c23f0b` |
 
-### Emails
-
-```
-agonzalez@bilden[.]com[.]mx
-alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
-```
-
 ### Infrastructure
 
 * Clever Cloud (`*.cleverapps.io`) — hébergement kit v1
-* Cloudflare (reverse proxy / protection)
-* **Clientify, SL** (`app.clientify.com`) — plateforme CRM/email marketing utilisée comme relai d'envoi entre le raccourcisseur d'URL et les victimes
+* Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC
+* **Clientify, SL** (`app.clientify.com`) — plateforme CRM/email marketing utilisée comme plateforme d'envoi des emails frauduleux
   * NIF : B-04800249 — Reg. Mercantil Almería, T 1665, F 31, Hoja AL-43389
   * Contact abuse : `team@clientify.com`
   * DPO (enregistré AEPD) : `dpo@clientify.com`
@@ -174,9 +177,9 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 
 ### 7.1 Chaîne d'attaque
 
-1. Envoi email
+1. Envoi email (via Clientify)
 2. Redirection via raccourcisseur (`appurl.io`)
-3. Challenge Cloudflare (anti-bot)
+3. Challenge Cloudflare (anti-bot, type `managed`)
 4. Page d'atterrissage — collecte d'identité (`index.php`)
 5. Page de détails — affichage du montant (`details.php`)
 6. Page de paiement — collecte bancaire (`card.php`)
@@ -198,13 +201,9 @@ Le message est encodé en Quoted-Printable, ce qui fragmente les chaînes de car
 
 Le lien initial pointe vers un raccourcisseur d'URL tiers (`appurl.io`) qui masque la destination finale. Le contenu servi peut varier selon les attributs de la requête (User-Agent, géolocalisation IP, présence de cookies), permettant de présenter un contenu neutre aux robots d'analyse et le kit de phishing aux victimes réelles.
 
-#### Protection CDN (Cloudflare — type `managed`)
-
-Le site frauduleux est placé derrière un challenge Cloudflare de type `managed`, révélé par les paramètres `_cf_chl_opt` présents dans le code source de la page d'atterrissage. Cette couche remplit trois fonctions : masquer l'adresse IP réelle du serveur hébergeant le kit, bloquer les crawlers automatisés des équipes de threat intelligence, et conférer une apparence de légitimité via le certificat TLS associé au CDN.
-
 #### Blocage IP actif en temps réel (`js.js` + `check_ip.php`)
 
-L'analyse de `js.js` révèle une couche d'évasion active particulièrement notable. Le script interroge l'endpoint `./status/check_ip.php` **toutes les secondes** via un `fetch` avec cache désactivé (`cache: 'no-store'`). Si la réponse JSON contient `"blocked": true`, la victime est immédiatement redirigée vers `https://www.google.com` sans aucun message d'erreur.
+Le script `js.js` interroge l'endpoint `./status/check_ip.php` **toutes les secondes**. Si la réponse contient `"blocked": true`, la victime est redirigée silencieusement vers `https://www.google.com`. Ce mécanisme permet à l'opérateur de blacklister depuis son dashboard les IPs des chercheurs, bots d'analyse ou équipes de takedown, sans que ceux-ci ne détectent le kit — ils voient simplement Google s'afficher.
 
 ```js
 setInterval(() => {
@@ -218,11 +217,9 @@ setInterval(() => {
 }, 1000);
 ```
 
-Ce mécanisme permet à l'opérateur, depuis son dashboard, de **blacklister manuellement ou automatiquement** toute IP suspecte (chercheur en sécurité, crawler de threat intelligence, équipe de takedown) en temps quasi réel. La redirection vers Google est délibérément choisie pour sa neutralité — un analyste qui verrait sa session soudainement redirigée pourrait conclure à une simple erreur de navigation plutôt qu'à un blocage actif.
+#### Protection CDN (Cloudflare — type `managed`)
 
-Ce script est chargé sur toutes les pages du kit (`index.php` et `card.php`), ce qui signifie que le blocage peut intervenir à n'importe quelle étape du tunnel. Il est également probable que le champ caché `cap` présent dans `index.php` soit peuplé par ce même système avec un token de session lié à l'IP, permettant au backend de corréler les soumissions de formulaire avec les profils de visiteurs suivis.
-
-> Endpoint de blocage : `./status/check_ip.php`
+Le site frauduleux est placé derrière un challenge Cloudflare de type `managed`, révélé par les paramètres `_cf_chl_opt` présents dans le code source de la page d'atterrissage. Cette couche remplit trois fonctions : masquer l'adresse IP réelle du serveur hébergeant le kit, bloquer les crawlers automatisés des équipes de threat intelligence, et conférer une apparence de légitimité via le certificat TLS associé au CDN.
 
 ---
 
@@ -256,36 +253,36 @@ L'ensemble de l'infrastructure a migré entre la v1 et la v2, mais la structure 
 | Ville | Texte libre |
 | Code postal | Texte libre |
 
-#### Étape 2 — Collecte bancaire (page de paiement confirmée)
+Le formulaire contient également deux champs cachés : `cap` (probablement un token de session lié à l'IP, peuplé dynamiquement) et `details` (métadonnées de session injectées par `js.js`).
 
-L'analyse du code source de la page de paiement confirme la collecte complète des coordonnées bancaires. Le formulaire est visuellement soigné (logo carte, bandeau "Ce site est entièrement sécurisé", icône cadenas) et reproduit fidèlement l'apparence d'un portail de paiement officiel.
+#### Étape 2 — Collecte bancaire (`card.php`)
 
 | Champ | Masque jQuery | Remarque |
 |---|---|---|
 | Titulaire de la carte | Aucun | Texte libre |
 | Numéro de carte | `0000 0000 0000 0000` | 16 chiffres — Visa / Mastercard |
 | Date d'expiration | `00/00` | Format MM/AA |
-| CVV | `0000` | **4 chiffres** — couvre aussi les cartes Amex (CVV à 4 chiffres) |
+| CVV | `0000` | **4 chiffres** — couvre aussi les cartes Amex |
 
-L'utilisation d'un masque CVV à 4 chiffres au lieu de 3 indique un ciblage délibérément élargi aux porteurs de cartes American Express.
+L'utilisation d'un masque CVV à 4 chiffres indique un ciblage délibérément élargi aux porteurs de cartes American Express. Le footer reproduit fidèlement celui du portail officiel `amendes.gouv.fr` (DGFiP, Legifrance, Service-public.fr), renforçant l'illusion de légitimité.
 
-Le footer de cette page reproduit fidèlement celui du portail officiel `amendes.gouv.fr` : mentions DGFiP, liens Legifrance et Service-public.fr, copyright Direction générale des Finances publiques — renforçant l'illusion de légitimité auprès de victimes non averties.
+#### Tracking en temps réel des victimes (`stutes.js`)
 
-#### Tracking en temps réel des victimes
+Le kit embarque un script de tracking qui envoie des pings toutes les 30 secondes vers `status/update_status.php`, signalant le statut `online` ou `offline` de la victime ainsi que la page consultée. Combiné au mécanisme de blocage IP de `js.js`, ce système implique l'existence d'un **dashboard d'administration** permettant à l'opérateur de surveiller et contrôler en temps réel chaque victime dans le tunnel.
 
-Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodiques toutes les 30 secondes vers un endpoint de suivi (`status/update_status.php`), signalant le statut `online` ou `offline` de la victime ainsi que la page consultée. Ce mécanisme implique l'existence d'un **dashboard d'administration** permettant à l'opérateur de surveiller en temps réel la progression de chaque victime dans le tunnel, et d'intervenir manuellement si nécessaire (relance, modification du contenu affiché).
-
-> Endpoint de tracking (v1) : `hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php`
-> Endpoint de tracking (v2) : `hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/status/update_status[.]php`
+> Endpoints de tracking :
+> * v1 : `hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php`
+> * v2 : `hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/update_status[.]php`
 
 ---
 
-## 8. Recommandations CERT dans un cadre professionnel
+## 8. Recommandations CERT
 
 ### Réponse immédiate
 
 * Takedown coordonné auprès de l'hébergeur (Clever Cloud) et du CDN (Cloudflare).
-* Signalement PHAROS (plateforme nationale de signalement des contenus illicites).
+* **Signalement PHAROS** (Police nationale / Gendarmerie nationale) — effectué. Référence : `FMXVFONYKVWA`, 15/04/2026 07:54.
+* **Signalement cybermalveillance.gouv.fr** — effectué le 20/04/2026.
 * Notification à l'ANTAI pour communication officielle auprès du public.
 * **Signalement à Clientify, SL** — la plateforme CRM espagnole (`app.clientify.com`) est utilisée comme plateforme d'envoi des emails frauduleux. Son rôle se limite à ce stade à l'acheminement des messages initiaux vers les victimes ; l'hébergement du kit de phishing est masqué derrière Cloudflare en mode `managed` et ne peut être attribué à Clientify sans accès aux logs Cloudflare (réquisition judiciaire). Le signalement abuse a été effectué auprès de `team@clientify.com` et `dpo@clientify.com` avec les IoC et l'ID de campagne (`643018`).
 * En cas d'absence de réaction de Clientify, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos) — le dossier d'identification (NIF B-04800249, Reg. Mercantil Almería T 1665 F 31 Hoja AL-43389) est suffisamment précis pour constituer un signalement formel.
