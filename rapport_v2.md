@@ -259,7 +259,7 @@ Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodi
 
 ---
 
-## 8. Recommandations CERT
+## 8. Recommandations CERT dans un cade professionnel
 
 ### Réponse immédiate
 
