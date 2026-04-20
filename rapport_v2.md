@@ -104,7 +104,8 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 | 15/04/2026 | v2 – protection | Ajout Cloudflare |
 | 15/04/2026 | Signalements | PHAROS, Clientify, INCIBE-CERT |
 | 16/04/2026 | v2 – réponse | Takedown CDN |
-| 17/04/2026 | INCIBE-CERT | Confirmation de prise en charge || 20/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
+| 17/04/2026 | v2 – exploitation | CDN de nouveau OK |
+| 17/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
 | 20/04/2026 | Signalement | cybermalveillance.gouv.fr |
 
 ## 6. Indicateurs de compromission (IoC)
