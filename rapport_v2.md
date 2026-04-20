@@ -287,10 +287,9 @@ Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodi
 * Takedown coordonné auprès de l'hébergeur (Clever Cloud) et du CDN (Cloudflare).
 * Signalement PHAROS (plateforme nationale de signalement des contenus illicites).
 * Notification à l'ANTAI pour communication officielle auprès du public.
-* **Signalement à Clientify, SL** — la plateforme CRM espagnole est utilisée comme relai d'envoi entre le raccourcisseur d'URL et les victimes. En tant qu'entreprise soumise au RGPD, elle a l'obligation de traiter ce signalement. Deux contacts à notifier simultanément :
-  * `team@clientify.com` — signalement abuse avec les IoC et l'URL de campagne identifiée
-  * `dpo@clientify.com` — signalement RGPD : les données personnelles de victimes françaises transitent via leur infrastructure à leur insu
-* En cas d'absence de réaction de Clientify sous 72h, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos), autorité de contrôle compétente — le dossier d'identification de l'entreprise (NIF, registre mercantil) est suffisamment précis pour constituer un signalement formel.
+* **Signalement à Clientify, SL** — la plateforme CRM espagnole (`app.clientify.com`) est utilisée comme plateforme d'envoi des emails frauduleux. Son rôle se limite à ce stade à l'acheminement des messages initiaux vers les victimes ; l'hébergement du kit de phishing est masqué derrière Cloudflare en mode `managed` et ne peut être attribué à Clientify sans accès aux logs Cloudflare (réquisition judiciaire). Le signalement abuse a été effectué auprès de `team@clientify.com` et `dpo@clientify.com` avec les IoC et l'ID de campagne (`643018`).
+* En cas d'absence de réaction de Clientify, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos) — le dossier d'identification (NIF B-04800249, Reg. Mercantil Almería T 1665 F 31 Hoja AL-43389) est suffisamment précis pour constituer un signalement formel.
+* **Signalement à l'INCIBE-CERT** (Instituto Nacional de Ciberseguridad) — interlocuteur privilégié pour les domaines `.es` et les infrastructures espagnoles, avec des canaux directs auprès de Red.es pour les procédures de takedown. Signalement effectué. **Réponse reçue le 20/04/2026 : prise en charge confirmée**, analyse en cours selon leurs procédures internes.
 
 ### Prévention
 
