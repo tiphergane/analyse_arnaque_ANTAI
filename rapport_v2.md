@@ -18,7 +18,7 @@ L'attaquant démontre :
 
 * une **capacité d'adaptation rapide** (rotation d'infrastructure)
 * l'usage de **services légitimes (PaaS, CDN)** pour masquer l'activité
-* des **techniques d'évasion avancées** (padding, cloaking, anti-bot)
+* des **techniques d'évasion avancées** (padding, cloaking, blocage IP actif en temps réel)
 
 ---
 
@@ -56,11 +56,6 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 * **T1566.001 – Spearphishing Attachment**
 * **T1566.002 – Spearphishing Link**
 
-#### Resource Development
-
-* **T1583.001 – Acquire Infrastructure: Domains**
-* **T1585.001 – Establish Accounts: Domains**
-
 #### Execution
 
 * **T1204.001 – User Execution: Malicious Link**
@@ -90,6 +85,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 * **T1027 – Obfuscated/Compressed Files (padding HTML)**
 * **T1497 – Virtualization/Sandbox Evasion**
 * **T1036 – Masquerading (ANTAI branding)**
+* **T1562.006 – Impair Defenses: Indicator Blocking** — `check_ip.php` interrogé toutes les secondes ; redirection silencieuse vers Google si l'IP est blacklistée par l'opérateur depuis le dashboard
 
 ---
 
@@ -125,13 +121,17 @@ service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es
 hxxps://appurl[.]io/wgMdQVVusR
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/index[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/details[.]php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/card[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/Assets/php/config/func[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/check_ip[.]php
 hxxps://appurl[.]io/jp-S8Zjien
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/index[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/details[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/card[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/php/config/func[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/update_status[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/check_ip[.]php
 hxxps://www[.]paiementexpress[.]es
 ```
 
@@ -158,7 +158,7 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 3. Challenge Cloudflare (anti-bot)
 4. Page d'atterrissage — collecte d'identité (`index.php`)
 5. Page de détails — affichage du montant (`details.php`)
-6. Page de paiement — collecte bancaire (`card.php` ou équivalent)
+6. Page de paiement — collecte bancaire (`card.php`)
 7. Exfiltration backend (`func.php`)
 
 ---
@@ -181,6 +181,28 @@ Le lien initial pointe vers un raccourcisseur d'URL tiers (`appurl.io`) qui masq
 
 Le site frauduleux est placé derrière un challenge Cloudflare de type `managed`, révélé par les paramètres `_cf_chl_opt` présents dans le code source de la page d'atterrissage. Cette couche remplit trois fonctions : masquer l'adresse IP réelle du serveur hébergeant le kit, bloquer les crawlers automatisés des équipes de threat intelligence, et conférer une apparence de légitimité via le certificat TLS associé au CDN.
 
+#### Blocage IP actif en temps réel (`js.js` + `check_ip.php`)
+
+L'analyse de `js.js` révèle une couche d'évasion active particulièrement notable. Le script interroge l'endpoint `./status/check_ip.php` **toutes les secondes** via un `fetch` avec cache désactivé (`cache: 'no-store'`). Si la réponse JSON contient `"blocked": true`, la victime est immédiatement redirigée vers `https://www.google.com` sans aucun message d'erreur.
+
+```js
+setInterval(() => {
+    fetch('./status/check_ip.php', { cache: 'no-store' })
+        .then(r => r.json())
+        .then(d => {
+            if (d.blocked === true) {
+                window.location.replace("https://www.google.com");
+            }
+        });
+}, 1000);
+```
+
+Ce mécanisme permet à l'opérateur, depuis son dashboard, de **blacklister manuellement ou automatiquement** toute IP suspecte (chercheur en sécurité, crawler de threat intelligence, équipe de takedown) en temps quasi réel. La redirection vers Google est délibérément choisie pour sa neutralité — un analyste qui verrait sa session soudainement redirigée pourrait conclure à une simple erreur de navigation plutôt qu'à un blocage actif.
+
+Ce script est chargé sur toutes les pages du kit (`index.php` et `card.php`), ce qui signifie que le blocage peut intervenir à n'importe quelle étape du tunnel. Il est également probable que le champ caché `cap` présent dans `index.php` soit peuplé par ce même système avec un token de session lié à l'IP, permettant au backend de corréler les soumissions de formulaire avec les profils de visiteurs suivis.
+
+> Endpoint de blocage : `./status/check_ip.php`
+
 ---
 
 ### 7.3 Exfiltration
@@ -195,8 +217,10 @@ L'ensemble de l'infrastructure a migré entre la v1 et la v2, mais la structure 
 |---|---|---|
 | Page d'identité | `…/amendes/index.php` | `…/net/index.php` |
 | Page de détails | `…/amendes/details.php` | `…/net/details.php` |
+| Page de paiement | `…/amendes/card.php` | `…/net/card.php` |
 | Exfiltration | `…/amendes/Assets/php/config/func.php` | `…/net/Assets/php/config/func.php` |
 | Tracking | `…/amendes/status/update_status.php` | `…/net/status/update_status.php` |
+| Blocage IP | `…/amendes/status/check_ip.php` | `…/net/status/check_ip.php` |
 
 #### Étape 1 — Collecte d'identité (`index.php`)
 
@@ -241,6 +265,7 @@ Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodi
 
 * Takedown coordonné auprès de l'hébergeur (Clever Cloud) et du CDN (Cloudflare).
 * Signalement PHAROS (plateforme nationale de signalement des contenus illicites).
+* Notification à l'ANTAI pour communication officielle auprès du public.
 
 ### Prévention
 
@@ -269,7 +294,7 @@ L'absence de ciblage précis des victimes (pas de personnalisation du message, p
 
 Cette campagne illustre une tendance de fond dans l'écosystème de la cybercriminalité francophone : l'accès facilité à des kits de phishing clé en main abaisse considérablement le seuil d'entrée, permettant à des acteurs peu expérimentés de déployer des infrastructures d'attaque multi-couches en quelques heures.
 
-L'analyse de bout en bout révèle un opérateur qui maîtrise les outils sans en avoir encore parfaitement rationalisé l'usage : la sophistication technique du kit (Cloudflare, tracking temps réel, tunnel de collecte structuré, support multilingue) contraste avec des erreurs opérationnelles visibles — adresses expéditrices non crédibles, v1 vraisemblablement déployée par inadvertance, infrastructure hébergée sur un PaaS public facilement démontable.
+L'analyse de bout en bout révèle un opérateur qui maîtrise les outils sans en avoir encore parfaitement rationalisé l'usage : la sophistication technique du kit (Cloudflare, tracking temps réel, **blocage IP actif**, tunnel de collecte structuré, support multilingue) contraste avec des erreurs opérationnelles visibles — adresses expéditrices non crédibles, v1 vraisemblablement déployée par inadvertance, infrastructure hébergée sur un PaaS public facilement démontable.
 
 La rotation rapide vers une v2 après le takedown de la v1 confirme que les délais de réponse actuels, bien qu'efficaces, ne suffisent pas à neutraliser durablement ce type d'acteur. Une approche préventive coordonnée — partage d'IoC en temps réel, notification proactive des hébergeurs et des CDN, communication publique de l'ANTAI — reste la réponse la plus efficace face à des campagnes opportunistes de ce type.
 
