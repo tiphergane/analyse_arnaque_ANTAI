@@ -113,6 +113,8 @@ appurl.io
 dfdsfsrt.cleverapps.io
 paiementexpress.es
 service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es
+app.clientify.com
+clientify.net
 ```
 
 ### URLs
@@ -123,6 +125,8 @@ hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/index[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/details[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/card[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/Assets/php/config/func[.]php
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/Assets/js/js[.]js
+hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/Assets/js/stutes[.]js
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/update_status[.]php
 hxxps://dfdsfsrt[.]cleverapps[.]io/service/payment-antai/amendes/status/check_ip[.]php
 hxxps://appurl[.]io/jp-S8Zjien
@@ -130,10 +134,23 @@ hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/index[
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/details[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/card[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/php/config/func[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/js/js[.]js
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/js/stutes[.]js
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/update_status[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/check_ip[.]php
 hxxps://www[.]paiementexpress[.]es
 ```
+
+### Hashes SHA256 (pages HTML rendues côté client)
+
+> Ces empreintes correspondent aux pages telles que reçues par le navigateur. Le code PHP exécuté côté serveur n'est pas inclus. Ils permettent d'identifier cette instance précise du kit ; toute modification du HTML, même mineure, produirait des empreintes différentes.
+
+| Fichier | Arborescence v1 | Arborescence v2 | SHA256 |
+|---|---|---|---|
+| `index.php` | `/service/payment-antai/amendes/index.php` | `/net/index.php` | `00e0a3f0c9b435cfa0119f8853815127548beef5b3cd62454e49e4cb49027594` |
+| `card.php` | `/service/payment-antai/amendes/card.php` | `/net/card.php` | `ae3cd7d937a32097294b63d0e5c49335b615f7f2b97eec94ed213cd80e245d76` |
+| `js.js` | `/service/payment-antai/amendes/Assets/js/js.js` | `/net/Assets/js/js.js` | `be1ab9df8b052cb1306d9afe90088380530101323ac1a8e92cc918b9c1f420a6` |
+| `stutes.js` | `/service/payment-antai/amendes/Assets/js/stutes.js` | `/net/Assets/js/stutes.js` | `eb036f1eaa0d35e643d9e2d1f43ed8a8e4f1d15ff58bdef88f7f90f240c23f0b` |
 
 ### Emails
 
@@ -144,8 +161,12 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 
 ### Infrastructure
 
-* Clever Cloud (`*.cleverapps.io`)
+* Clever Cloud (`*.cleverapps.io`) — hébergement kit v1
 * Cloudflare (reverse proxy / protection)
+* **Clientify, SL** (`app.clientify.com`) — plateforme CRM/email marketing utilisée comme relai d'envoi entre le raccourcisseur d'URL et les victimes
+  * NIF : B-04800249 — Reg. Mercantil Almería, T 1665, F 31, Hoja AL-43389
+  * Contact abuse : `team@clientify.com`
+  * DPO (enregistré AEPD) : `dpo@clientify.com`
 
 ---
 
@@ -259,13 +280,17 @@ Le kit embarque un script JavaScript (`stutes.js`) qui envoie des pings périodi
 
 ---
 
-## 8. Recommandations CERT dans un cade professionnel
+## 8. Recommandations CERT dans un cadre professionnel
 
 ### Réponse immédiate
 
 * Takedown coordonné auprès de l'hébergeur (Clever Cloud) et du CDN (Cloudflare).
 * Signalement PHAROS (plateforme nationale de signalement des contenus illicites).
 * Notification à l'ANTAI pour communication officielle auprès du public.
+* **Signalement à Clientify, SL** — la plateforme CRM espagnole est utilisée comme relai d'envoi entre le raccourcisseur d'URL et les victimes. En tant qu'entreprise soumise au RGPD, elle a l'obligation de traiter ce signalement. Deux contacts à notifier simultanément :
+  * `team@clientify.com` — signalement abuse avec les IoC et l'URL de campagne identifiée
+  * `dpo@clientify.com` — signalement RGPD : les données personnelles de victimes françaises transitent via leur infrastructure à leur insu
+* En cas d'absence de réaction de Clientify sous 72h, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos), autorité de contrôle compétente — le dossier d'identification de l'entreprise (NIF, registre mercantil) est suffisamment précis pour constituer un signalement formel.
 
 ### Prévention
 
