@@ -173,8 +173,10 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 * Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC. A restreint l'accès aux URLs signalées et révélé l'hébergeur réel (`BROOKPLUS-LIMITED`).
 * **Cloustrix / BROOKPLUS-LIMITED** (GB) — hébergeur réel du kit v2, opérant vraisemblablement comme **hébergeur bulletproof**
   * Enregistrement légal : `BROOKPLUS LIMITED`, Companies House n° `16693924`, `35 Firs Avenue, London, N11 3NE`
-  * Le numéro `16693924` ne remonte dans aucun index public connu — soit fictif, soit immatriculation très récente non encore indexée
-  * Adresse résidentielle dans le nord de Londres — typique des shell companies UK utilisées comme façades légales
+  * Immatriculée le **4 septembre 2025** — société très récente
+  * SIC `96090` ("Other service activities not elsewhere classified") — code fourre-tout masquant l'activité réelle
+  * Fondée par un ressortissant **britannique** (adresse identique au siège social — pattern nominee director), contrôle transféré **27 jours après** la création à un ressortissant **italien** résidant en Toscane (né en février 1991) — schéma classique de shell company
+  * Le nouveau contrôlant majoritaire (75%+, droits de vote + nomination des directeurs) n'a **pas encore passé la vérification d'identité Companies House** (due le 17/09/2026)
   * Site vitrine (`cloustrix.com`) sans aucun tunnel commercial ni formulaire de commande — présence légale uniquement
   * Datacenter Londres / Frankfurt / Pays-Bas, DDoS mitigation inclus — caractéristiques communes aux BPH
   * Contact abuse : `abuse@cloustrix.com`
@@ -297,9 +299,9 @@ Le kit embarque un script de tracking qui envoie des pings toutes les 30 seconde
 * **Signalement cybermalveillance.gouv.fr** — effectué le 20/04/2026.
 * Notification à l'ANTAI pour communication officielle auprès du public.
 * **Signalement à Clientify, SL** — la plateforme CRM espagnole (`app.clientify.com`) est utilisée comme plateforme d'envoi des emails frauduleux. Son rôle se limite à ce stade à l'acheminement des messages initiaux vers les victimes ; l'hébergement du kit de phishing est masqué derrière Cloudflare en mode `managed` et ne peut être attribué à Clientify sans accès aux logs Cloudflare (réquisition judiciaire). Le signalement abuse a été effectué auprès de `team@clientify.com` et `dpo@clientify.com` avec les IoC et l'ID de campagne (`643018`).
-* **Signalement à Cloustrix / BROOKPLUS-LIMITED (GB)** — hébergeur réel du kit v2, identifié grâce à la réponse de Cloudflare (Report ID `8d2a07ee4f9b24fc`). Présente les caractéristiques d'un hébergeur bulletproof : site vitrine sans tunnel commercial, shell company UK à adresse résidentielle, numéro Companies House `16693924` non vérifiable dans les index publics. Signalement effectué à `abuse@cloustrix.com`.
-* **Signalement à Action Fraud** (UK National Fraud & Cyber Reporting Centre) — interlocuteur compétent pour les sociétés immatriculées en England & Wales. Leviers directs sur Companies House pour vérification du numéro `16693924` et sur les hébergeurs UK. Signalement à effectuer sur `actionfraud.police.uk`.
-* **Signalement au NCSC** (National Cyber Security Centre, UK) — compétent pour les infrastructures d'hébergement opérant depuis le Royaume-Uni. Signalement à effectuer via `report.ncsc.gov.uk`.
+* **Signalement à Cloustrix / BROOKPLUS-LIMITED (GB)** — hébergeur réel du kit v2, identifié grâce à la réponse de Cloudflare (Report ID `8d2a07ee4f9b24fc`). Société immatriculée le 4/09/2025, contrôle transféré 27 jours après la création à un ressortissant italien résidant en Toscane — schéma cohérent avec une shell company. Vérification d'identité du contrôlant majoritaire non encore effectuée auprès de Companies House (due le 17/09/2026). Signalement effectué à `abuse@cloustrix.com`.
+* **Signalement à Action Fraud** (UK National Fraud & Cyber Reporting Centre) — compétent pour les sociétés immatriculées en England & Wales, avec accès direct à Companies House. Signalement effectué via `actionfraud.police.uk`.
+* **Signalement au NCSC** (National Cyber Security Centre, UK) — compétent pour les infrastructures d'hébergement opérant depuis le Royaume-Uni. Signalement effectué via `report.ncsc.gov.uk`.
 * En cas d'absence de réaction de Clientify, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos) — le dossier d'identification (NIF B-04800249, Reg. Mercantil Almería T 1665 F 31 Hoja AL-43389) est suffisamment précis pour constituer un signalement formel.
 * **Signalement à l'INCIBE-CERT** (Instituto Nacional de Ciberseguridad) — interlocuteur privilégié pour les domaines `.es` et les infrastructures espagnoles, avec des canaux directs auprès de Red.es pour les procédures de takedown. Signalement effectué. **Réponse reçue le 20/04/2026 : prise en charge confirmée**, analyse en cours selon leurs procédures internes.
 
