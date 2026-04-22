@@ -103,10 +103,14 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 | 15/04/2026 | v2 – infra | Domaine `paiementexpress.es` |
 | 15/04/2026 | v2 – protection | Ajout Cloudflare |
 | 15/04/2026 | Signalements | PHAROS, Clientify, INCIBE-CERT |
-| 16/04/2026 | v2 – réponse | Takedown CDN |
-| 17/04/2026 | v2 – exploitation | CDN de nouveau OK |
-| 17/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
 | 20/04/2026 | Signalement | cybermalveillance.gouv.fr |
+| 22/04/2026 | Cloudflare | Restriction d'accès aux URLs + révélation hébergeur (Cloustrix / BROOKPLUS-LIMITED) |
+| 22/04/2026 | Signalement | Cloustrix `abuse@cloustrix.com` |
+| 22/04/2026 | Signalement | Action Fraud (UK) + NCSC (UK) |
+| 16/04/2026 | v2 – réponse | Takedown CDN |
+| 20/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
+
+---
 
 ## 6. Indicateurs de compromission (IoC)
 
@@ -166,7 +170,14 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 ### Infrastructure
 
 * Clever Cloud (`*.cleverapps.io`) — hébergement kit v1
-* Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC
+* Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC. A restreint l'accès aux URLs signalées et révélé l'hébergeur réel (`BROOKPLUS-LIMITED`).
+* **Cloustrix / BROOKPLUS-LIMITED** (GB) — hébergeur réel du kit v2, opérant vraisemblablement comme **hébergeur bulletproof**
+  * Enregistrement légal : `BROOKPLUS LIMITED`, Companies House n° `16693924`, `35 Firs Avenue, London, N11 3NE`
+  * Le numéro `16693924` ne remonte dans aucun index public connu — soit fictif, soit immatriculation très récente non encore indexée
+  * Adresse résidentielle dans le nord de Londres — typique des shell companies UK utilisées comme façades légales
+  * Site vitrine (`cloustrix.com`) sans aucun tunnel commercial ni formulaire de commande — présence légale uniquement
+  * Datacenter Londres / Frankfurt / Pays-Bas, DDoS mitigation inclus — caractéristiques communes aux BPH
+  * Contact abuse : `abuse@cloustrix.com`
 * **Clientify, SL** (`app.clientify.com`) — plateforme CRM/email marketing utilisée comme plateforme d'envoi des emails frauduleux
   * NIF : B-04800249 — Reg. Mercantil Almería, T 1665, F 31, Hoja AL-43389
   * Contact abuse : `team@clientify.com`
@@ -286,6 +297,9 @@ Le kit embarque un script de tracking qui envoie des pings toutes les 30 seconde
 * **Signalement cybermalveillance.gouv.fr** — effectué le 20/04/2026.
 * Notification à l'ANTAI pour communication officielle auprès du public.
 * **Signalement à Clientify, SL** — la plateforme CRM espagnole (`app.clientify.com`) est utilisée comme plateforme d'envoi des emails frauduleux. Son rôle se limite à ce stade à l'acheminement des messages initiaux vers les victimes ; l'hébergement du kit de phishing est masqué derrière Cloudflare en mode `managed` et ne peut être attribué à Clientify sans accès aux logs Cloudflare (réquisition judiciaire). Le signalement abuse a été effectué auprès de `team@clientify.com` et `dpo@clientify.com` avec les IoC et l'ID de campagne (`643018`).
+* **Signalement à Cloustrix / BROOKPLUS-LIMITED (GB)** — hébergeur réel du kit v2, identifié grâce à la réponse de Cloudflare (Report ID `8d2a07ee4f9b24fc`). Présente les caractéristiques d'un hébergeur bulletproof : site vitrine sans tunnel commercial, shell company UK à adresse résidentielle, numéro Companies House `16693924` non vérifiable dans les index publics. Signalement effectué à `abuse@cloustrix.com`.
+* **Signalement à Action Fraud** (UK National Fraud & Cyber Reporting Centre) — interlocuteur compétent pour les sociétés immatriculées en England & Wales. Leviers directs sur Companies House pour vérification du numéro `16693924` et sur les hébergeurs UK. Signalement à effectuer sur `actionfraud.police.uk`.
+* **Signalement au NCSC** (National Cyber Security Centre, UK) — compétent pour les infrastructures d'hébergement opérant depuis le Royaume-Uni. Signalement à effectuer via `report.ncsc.gov.uk`.
 * En cas d'absence de réaction de Clientify, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos) — le dossier d'identification (NIF B-04800249, Reg. Mercantil Almería T 1665 F 31 Hoja AL-43389) est suffisamment précis pour constituer un signalement formel.
 * **Signalement à l'INCIBE-CERT** (Instituto Nacional de Ciberseguridad) — interlocuteur privilégié pour les domaines `.es` et les infrastructures espagnoles, avec des canaux directs auprès de Red.es pour les procédures de takedown. Signalement effectué. **Réponse reçue le 20/04/2026 : prise en charge confirmée**, analyse en cours selon leurs procédures internes.
 
@@ -316,9 +330,9 @@ L'absence de ciblage précis des victimes (pas de personnalisation du message, p
 
 Cette campagne illustre une tendance de fond dans l'écosystème de la cybercriminalité francophone : l'accès facilité à des kits de phishing clé en main abaisse considérablement le seuil d'entrée, permettant à des acteurs peu expérimentés de déployer des infrastructures d'attaque multi-couches en quelques heures.
 
-L'analyse de bout en bout révèle un opérateur qui maîtrise les outils sans en avoir encore parfaitement rationalisé l'usage : la sophistication technique du kit (Cloudflare, tracking temps réel, **blocage IP actif**, tunnel de collecte structuré, support multilingue) contraste avec des erreurs opérationnelles visibles — adresses expéditrices non crédibles, v1 vraisemblablement déployée par inadvertance, infrastructure hébergée sur un PaaS public facilement démontable.
+L'analyse de bout en bout révèle un opérateur qui maîtrise les outils sans en avoir encore parfaitement rationalisé l'usage : la sophistication technique du kit (Cloudflare, tracking temps réel, **blocage IP actif**, tunnel de collecte structuré, support multilingue) contraste avec des erreurs opérationnelles visibles — adresses expéditrices non crédibles, v1 vraisemblablement déployée par inadvertance, recours à un hébergeur bulletproof (`Cloustrix / BROOKPLUS-LIMITED`) dont les indices de façade légale sont peu solides.
 
-La rotation rapide vers une v2 après le takedown de la v1 confirme que les délais de réponse actuels, bien qu'efficaces, ne suffisent pas à neutraliser durablement ce type d'acteur. Une approche préventive coordonnée — partage d'IoC en temps réel, notification proactive des hébergeurs et des CDN, communication publique de l'ANTAI — reste la réponse la plus efficace face à des campagnes opportunistes de ce type.
+La rotation rapide vers une v2 après le takedown de la v1, combinée au recours probable à un hébergeur bulletproof, confirme que les délais de réponse actuels, bien qu'efficaces, ne suffisent pas à neutraliser durablement ce type d'acteur. Une approche préventive coordonnée — partage d'IoC en temps réel, notification proactive des hébergeurs et des CDN, communication publique de l'ANTAI, et coopération internationale (INCIBE-CERT, NCSC, Action Fraud) — reste la réponse la plus efficace face à des campagnes opportunistes de ce type.
 
 ---
 
