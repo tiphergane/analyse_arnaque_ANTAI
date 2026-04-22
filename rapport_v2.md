@@ -6,7 +6,7 @@
 * **Secteur impacté :** Grand public (France)
 * **Usurpation :** ANTAI (Agence nationale de traitement automatisé des infractions)
 * **Période observée :** 14–15 avril 2026
-* **Statut :** Infrastructures démantelées (v1 et v2)
+* **Statut :** Infrastructure v1 démantelée — infrastructure v2 **toujours active** malgré les signalements
 
 ---
 
@@ -170,7 +170,7 @@ alu[.]23130638@correo[.]itlalaguna[.]edu[.]mx
 ### Infrastructure
 
 * Clever Cloud (`*.cleverapps.io`) — hébergement kit v1
-* Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC. A restreint l'accès aux URLs signalées et révélé l'hébergeur réel (`BROOKPLUS-LIMITED`).
+* Cloudflare (reverse proxy / protection) — IPs mutualisées, non exploitables comme IoC. A prétendu restreindre l'accès aux URLs signalées tout en continuant à les servir — la "restriction" s'applique vraisemblablement uniquement à certaines requêtes automatisées, sans impact sur le trafic des victimes réelles. A révélé l'hébergeur réel (`BROOKPLUS-LIMITED`).
 * **Cloustrix / BROOKPLUS-LIMITED** (GB) — hébergeur réel du kit v2, opérant vraisemblablement comme **hébergeur bulletproof**
   * Enregistrement légal : `BROOKPLUS LIMITED`, Companies House n° `16693924`, `35 Firs Avenue, London, N11 3NE`
   * Immatriculée le **4 septembre 2025** — société très récente
