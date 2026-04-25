@@ -106,7 +106,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 | 20/04/2026 | Signalement | cybermalveillance.gouv.fr |
 | 22/04/2026 | Cloudflare | Restriction d'accès aux URLs + révélation hébergeur (Cloustrix / BROOKPLUS-LIMITED) |
 | 22/04/2026 | Signalement | Cloustrix `abuse@cloustrix.com` |
-| 22/04/2026 | Signalement | Action Fraud (UK) + NCSC (UK) |
+| 22/04/2026 | Signalement | Action Fraud (UK) |
 | 16/04/2026 | v2 – réponse | Takedown CDN |
 | 20/04/2026 | INCIBE-CERT | Confirmation de prise en charge |
 
@@ -322,8 +322,9 @@ Le kit embarque un script de tracking qui envoie des pings toutes les 30 seconde
 * Notification à l'ANTAI pour communication officielle auprès du public.
 * **Signalement à Clientify, SL** — la plateforme CRM espagnole (`app.clientify.com`) est utilisée comme plateforme d'envoi des emails frauduleux. Son rôle se limite à ce stade à l'acheminement des messages initiaux vers les victimes ; l'hébergement du kit de phishing est masqué derrière Cloudflare en mode `managed` et ne peut être attribué à Clientify sans accès aux logs Cloudflare (réquisition judiciaire). Le signalement abuse a été effectué auprès de `team@clientify.com` et `dpo@clientify.com` avec les IoC et l'ID de campagne (`643018`).
 * **Signalement à Cloustrix / BROOKPLUS-LIMITED (GB)** — hébergeur réel du kit v2, identifié grâce à la réponse de Cloudflare (Report ID `8d2a07ee4f9b24fc`). Société immatriculée le 4/09/2025, contrôle transféré 27 jours après la création à un ressortissant italien résidant en Toscane — schéma cohérent avec une shell company. Vérification d'identité du contrôlant majoritaire non encore effectuée auprès de Companies House (due le 17/09/2026). Signalement effectué à `abuse@cloustrix.com`.
-* **Signalement à Action Fraud** (UK National Fraud & Cyber Reporting Centre) — compétent pour les sociétés immatriculées en England & Wales, avec accès direct à Companies House. Signalement effectué via `actionfraud.police.uk`.
-* **Signalement au NCSC** (National Cyber Security Centre, UK) — compétent pour les infrastructures d'hébergement opérant depuis le Royaume-Uni. Signalement effectué via `report.ncsc.gov.uk`.
+* **Signalement à Action Fraud** (UK National Fraud & Cyber Reporting Centre) — compétent pour les sociétés immatriculées en England & Wales, avec accès direct à Companies House. Accepte les signalements de ressortissants étrangers dès lors que la société visée est immatriculée au Royaume-Uni. Signalement effectué via `actionfraud.police.uk`.
+
+  > Note : Le NCSC UK limite ses signalements aux organisations et individus britanniques — non accessible pour un ressortissant français. Interpol disposait d'un portail de signalement cybercriminalité mais celui-ci était indisponible au moment de la rédaction de ce rapport.
 * En cas d'absence de réaction de Clientify, escalade possible auprès de l'**AEPD** (Agencia Española de Protección de Datos) — le dossier d'identification (NIF B-04800249, Reg. Mercantil Almería T 1665 F 31 Hoja AL-43389) est suffisamment précis pour constituer un signalement formel.
 * **Signalement à l'INCIBE-CERT** (Instituto Nacional de Ciberseguridad) — interlocuteur privilégié pour les domaines `.es` et les infrastructures espagnoles, avec des canaux directs auprès de Red.es pour les procédures de takedown. Signalement effectué. **Réponse reçue le 20/04/2026 : prise en charge confirmée**, analyse en cours selon leurs procédures internes.
 
