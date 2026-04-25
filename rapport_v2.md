@@ -117,12 +117,12 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
 ### Domaines
 
 ```
-appurl.io
-dfdsfsrt.cleverapps.io
-paiementexpress.es
-service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es
-app.clientify.com
-clientify.net
+appurl[.]io
+dfdsfsrt[.]cleverapps[.]io
+paiementexpress[.]es
+service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es
+app[.]clientify[.]com
+clientify[.]net
 ```
 
 ### URLs
