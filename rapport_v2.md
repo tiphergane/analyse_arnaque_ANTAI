@@ -146,6 +146,7 @@ hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/Assets/js/stutes[.]js
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/update_status[.]php
 hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/status/check_ip[.]php
+hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/victims/{IP}[.]txt
 hxxps://www[.]paiementexpress[.]es
 ```
 
@@ -279,6 +280,27 @@ Le formulaire contient également deux champs cachés : `cap` (probablement un t
 | CVV | `0000` | **4 chiffres** — couvre aussi les cartes Amex |
 
 L'utilisation d'un masque CVV à 4 chiffres indique un ciblage délibérément élargi aux porteurs de cartes American Express. Le footer reproduit fidèlement celui du portail officiel `amendes.gouv.fr` (DGFiP, Legifrance, Service-public.fr), renforçant l'illusion de légitimité.
+
+#### Mécanisme d'exfiltration confirmé — stockage fichier exposé
+
+L'analyse du comportement de `card.php` après soumission révèle le fonctionnement réel de `func.php` : les données collectées sont **écrites dans un fichier texte sur le serveur**, nommé d'après l'adresse IP de la victime, dans un répertoire `/victims/` accessible sans authentification.
+
+Structure de l'URL d'accès aux données :
+
+```
+https://service-en-ligne-amendes-antai-gouv-fr.paiementexpress.es/net/victims/{IP_VICTIME}.txt?{TIMESTAMP_MS}
+```
+
+Le paramètre numérique suffixant l'URL (`?1777126717506`) est un **timestamp Unix en millisecondes**, vraisemblablement utilisé comme cache-buster pour forcer le rechargement du fichier côté dashboard opérateur.
+
+Ce mécanisme présente plusieurs implications critiques :
+
+- Le répertoire `/victims/` retourne un **403 Forbidden** — le listing est désactivé, empêchant l'énumération directe des victimes. Cependant, l'accès direct à un fichier dont l'URL est connue (`{IP}.txt`) est **public et sans authentification**, comme confirmé par test avec une IP et des données factices. Toute personne connaissant l'IP d'une victime peut lire ses données en clair.
+- Les données de chaque victime (identité complète + coordonnées bancaires) sont **persistées en clair sur le serveur** plutôt qu'exfiltrées vers un canal externe — ce qui signifie qu'elles sont potentiellement récupérables par les autorités si le serveur est saisi
+- L'opérateur accède aux données depuis son dashboard via ces URLs horodatées, ce qui est cohérent avec le mécanisme de tracking en temps réel (`stutes.js`)
+
+> Endpoint d'accès aux données victimes (v2) :
+> `hxxps://service-en-ligne-amendes-antai-gouv-fr[.]paiementexpress[.]es/net/victims/{IP}[.]txt`
 
 #### Tracking en temps réel des victimes (`stutes.js`)
 
